@@ -8,7 +8,8 @@ const GEMINI_API_KEY = 'AIzaSyAi1WrBHN28g44_Lsxx1laBE7eHs8YiuK0'; // Added actua
 export const analyzeImage = async (file: File): Promise<string> => {
   try {
     // For demonstration purposes, check if API key is set
-    if (GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY') {
+    // Instead of comparing to a literal string, check if it's empty or not defined
+    if (!GEMINI_API_KEY || GEMINI_API_KEY.trim() === '') {
       console.warn('Gemini API key not set. Using fallback analysis.');
       return getFallbackAnalysis(file);
     }

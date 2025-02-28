@@ -7,7 +7,8 @@ const API_TOKEN = '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'; // Added actual token
 export const generateImage = async (prompt: string): Promise<string> => {
   try {
     // For demonstration purposes, check if token is set
-    if (API_TOKEN === 'YOUR_HUGGINGFACE_TOKEN') {
+    // Instead of comparing to a literal string, check if it's empty or not defined
+    if (!API_TOKEN || API_TOKEN.trim() === '') {
       console.warn('HuggingFace token not set. Using fallback images.');
       return getFallbackImage(prompt);
     }

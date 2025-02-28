@@ -11,7 +11,8 @@ const genAI = new GoogleGenerativeAI(API_KEY);
 export const processTextWithAI = async (text: string): Promise<string> => {
   try {
     // For demonstration purposes, we'll check if the API key is set
-    if (API_KEY === 'YOUR_GEMINI_API_KEY') {
+    // Instead of comparing to a literal string, check if it's empty or not defined
+    if (!API_KEY || API_KEY.trim() === '') {
       console.warn('Gemini API key not set. Using fallback response.');
       // Provide a fallback response for demo purposes
       return simulateFallbackResponse(text);
