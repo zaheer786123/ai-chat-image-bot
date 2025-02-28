@@ -2,7 +2,7 @@
 import { pipeline, RawImage } from '@huggingface/transformers';
 
 // HuggingFace API token would typically be stored in environment variables
-const API_TOKEN = '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'; // Added actual token
+const API_TOKEN = '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'; // Updated with provided API token
 
 export const generateImage = async (prompt: string): Promise<string> => {
   try {
