@@ -3,7 +3,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // This would typically come from an environment variable
 // For a frontend-only app, this is directly included but not ideal for production
-const API_KEY = 'YOUR_GEMINI_API_KEY'; // Replace with your actual API key
+const API_KEY = 'AIzaSyAi1WrBHN28g44_Lsxx1laBE7eHs8YiuK0'; // Added actual API key
 
 // Initialize the API
 const genAI = new GoogleGenerativeAI(API_KEY);

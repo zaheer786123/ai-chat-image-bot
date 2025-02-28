@@ -3,7 +3,7 @@ import { GoogleGenerativeAI, GenerativeModel } from '@google/generative-ai';
 import { pipeline } from '@huggingface/transformers';
 
 // This would typically come from environment variables
-const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY'; // Replace with your actual API key
+const GEMINI_API_KEY = 'AIzaSyAi1WrBHN28g44_Lsxx1laBE7eHs8YiuK0'; // Added actual API key
 
 export const analyzeImage = async (file: File): Promise<string> => {
   try {
