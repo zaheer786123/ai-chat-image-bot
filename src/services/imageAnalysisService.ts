@@ -1,5 +1,5 @@
 
-import { GoogleGenerativeAI, GenerativeModel } from '@google/generative-ai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { pipeline } from '@huggingface/transformers';
 
 // This would typically come from environment variables
@@ -17,8 +17,8 @@ export const analyzeImage = async (file: File): Promise<string> => {
     // Initialize Gemini
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
     
-    // Get the vision model
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro-vision' });
+    // Get the vision model - updated to use gemini-1.5-flash which supports vision
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
     
     // Convert file to a format compatible with the API
     const imageData = await fileToGenerativePart(file);
@@ -40,21 +40,7 @@ export const analyzeImage = async (file: File): Promise<string> => {
 // Fallback function for when API key is not set
 const getFallbackAnalysis = async (file: File): Promise<string> => {
   try {
-    // Try to use HuggingFace for local image classification
-    const classifier = await pipeline("image-classification");
-    
-    // Convert file to a format HuggingFace can use
-    const fileURL = URL.createObjectURL(file);
-    
-    const results = await classifier(fileURL);
-    
-    if (Array.isArray(results) && results.length > 0) {
-      // Handle the case where results is an array of objects with label and score
-      if ('label' in results[0] && 'score' in results[0]) {
-        return `This appears to be an image of ${results[0].label} with ${(results[0].score * 100).toFixed(2)}% confidence.`;
-      }
-    }
-    
+    // Using a simpler approach since HuggingFace pipeline has compatibility issues
     return getSimulatedAnalysis(file);
   } catch (error) {
     console.error('Error with local analysis:', error);

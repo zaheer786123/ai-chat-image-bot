@@ -18,8 +18,8 @@ export const processTextWithAI = async (text: string): Promise<string> => {
       return simulateFallbackResponse(text);
     }
 
-    // Use the gemini-pro model
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    // Use the gemini-1.5-flash model (updated from gemini-pro which is not found in v1beta)
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
     
     const result = await model.generateContent(text);
     const response = await result.response;
