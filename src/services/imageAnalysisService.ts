@@ -1,5 +1,5 @@
 
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenerativeAI, GenerativeModel } from '@google/generative-ai';
 import { pipeline } from '@huggingface/transformers';
 
 // This would typically come from environment variables
@@ -22,10 +22,11 @@ export const analyzeImage = async (file: File): Promise<string> => {
     // Convert file to a format compatible with the API
     const imageData = await fileToGenerativePart(file);
     
-    // Generate content with the image
-    const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: 'Describe this image in detail.' }, imageData] }],
-    });
+    // Generate content with the image - using the correct API format
+    const result = await model.generateContent([
+      "Describe this image in detail.",
+      imageData
+    ]);
     
     const response = await result.response;
     return response.text();
@@ -39,15 +40,18 @@ export const analyzeImage = async (file: File): Promise<string> => {
 const getFallbackAnalysis = async (file: File): Promise<string> => {
   try {
     // Try to use HuggingFace for local image classification
-    const classifier = await pipeline('image-classification');
+    const classifier = await pipeline("image-classification");
     
     // Convert file to a format HuggingFace can use
     const fileURL = URL.createObjectURL(file);
     
-    const result = await classifier(fileURL);
+    const results = await classifier(fileURL);
     
-    if (result && result.length > 0) {
-      return `This appears to be an image of ${result[0].label} with ${(result[0].score * 100).toFixed(2)}% confidence.`;
+    if (Array.isArray(results) && results.length > 0) {
+      // Handle the case where results is an array of objects with label and score
+      if ('label' in results[0] && 'score' in results[0]) {
+        return `This appears to be an image of ${results[0].label} with ${(results[0].score * 100).toFixed(2)}% confidence.`;
+      }
     }
     
     return getSimulatedAnalysis(file);
@@ -67,7 +71,7 @@ const fileToGenerativePart = async (file: File) => {
   
   return {
     inlineData: { 
-      data: await base64EncodedDataPromise,
+      data: await base64EncodedDataPromise as string,
       mimeType: file.type
     },
   };

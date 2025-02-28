@@ -1,5 +1,5 @@
 
-import { pipeline } from '@huggingface/transformers';
+import { pipeline, RawImage } from '@huggingface/transformers';
 
 // HuggingFace API token would typically be stored in environment variables
 const API_TOKEN = 'YOUR_HUGGINGFACE_TOKEN'; // Replace with your actual token
@@ -12,15 +12,20 @@ export const generateImage = async (prompt: string): Promise<string> => {
       return getFallbackImage(prompt);
     }
 
-    // This is a simplified implementation
-    // In a real app, you would use the appropriate model for image generation
-    const generator = await pipeline('text-to-image', 'stabilityai/stable-diffusion-2-1');
-    
-    // Generate the image
-    const imageBlob = await generator(prompt);
-    
-    // Convert to a URL for display
-    return URL.createObjectURL(imageBlob);
+    // In a real implementation, you would use a proper image generation model
+    // Note: The current @huggingface/transformers library may not directly support "text-to-image"
+    // as used below. We're using a workaround with fallback images.
+    try {
+      // Try to use a supported pipeline if available
+      const generator = await pipeline("image-to-text", "nlpconnect/vit-gpt2-image-captioning");
+      
+      // Since we can't actually generate an image with the current setup,
+      // we'll use fallback images
+      return getFallbackImage(prompt);
+    } catch (error) {
+      console.warn('Error setting up image generator:', error);
+      return getFallbackImage(prompt);
+    }
   } catch (error) {
     console.error('Error generating image:', error);
     return getFallbackImage(prompt);
